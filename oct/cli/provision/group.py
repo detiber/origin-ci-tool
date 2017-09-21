@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 
 from click import group
 
+from .duffy.group import duffy
 from .local.group import local
 from .remote.group import remote
 
@@ -42,5 +43,6 @@ def provision():
     pass
 
 
+provision.add_command(duffy)
 provision.add_command(local)
 provision.add_command(remote)

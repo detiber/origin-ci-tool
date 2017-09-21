@@ -4,6 +4,7 @@ from setuptools import find_packages, setup
 base_requires = [
     'Click',
     'ansible==3.0.0',
+    'python-cicoclient==0.3.11.dev15',
     'backports.shutil_get_terminal_size',
     'semver',
     'junit_xml',
@@ -26,7 +27,8 @@ setup(
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     dependency_links=[
-        'git+https://github.com/stevekuznetsov/ansible.git@skuznets/oct-release#egg=ansible-3.0.0'
+        'git+https://github.com/stevekuznetsov/ansible.git@skuznets/oct-release#egg=ansible-3.0.0',
+        'git+https://github.com/detiber/python-cicoclient.git@api_key_lookup#egg=python-cicoclient-0.3.11.dev15'
     ],
     install_requires=base_requires,
     tests_require=test_requires,
