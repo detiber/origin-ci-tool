@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import, division, print_function
 
-from click import Choice, UsageError, command, option, pass_context
+from click import Choice, UsageError, command, echo, option, pass_context
 from cicoclient.wrapper import CicoWrapper
 
 
@@ -94,7 +94,7 @@ def all_in_one_command(context, operating_system, arch, flavor, stage):
     """
     configuration = context.obj
     ssid = provision_with_duffy(arch, flavor)
-    register_host(configuration, ssid, operating_system, stage)
+#    register_host(configuration, ssid, operating_system, stage)
 
 
 def provision_with_duffy(arch, flavor):
@@ -105,7 +105,10 @@ def provision_with_duffy(arch, flavor):
     :param flavor: host flavor
     """
     cico = CicoWrapper(endpoint='http://admin.ci.centos.org:8080/')
-    _, ssid = cico.node_get(arch=arch, flavor=flavor)
+    click.echo("Requesting host from Duffy")
+    hosts, ssid = cico.node_get(arch=arch, flavor=flavor)
+    click.echo("Duffy ssid: {}".format(ssid))
+    click.echo("Duffy host: {}".format(hosts[0]))
     return ssid
 
 
