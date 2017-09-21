@@ -105,10 +105,10 @@ def provision_with_duffy(arch, flavor):
     :param flavor: host flavor
     """
     cico = CicoWrapper(endpoint='http://admin.ci.centos.org:8080/')
-    click.echo("Requesting host from Duffy")
+    echo("Requesting host from Duffy")
     hosts, ssid = cico.node_get(arch=arch, flavor=flavor)
-    click.echo("Duffy ssid: {}".format(ssid))
-    click.echo("Duffy host: {}".format(hosts[0]))
+    echo("Duffy ssid: {}".format(ssid))
+    echo("Duffy host: {}".format(hosts[0]))
     return ssid
 
 
