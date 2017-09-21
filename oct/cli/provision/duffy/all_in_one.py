@@ -108,7 +108,7 @@ def provision_with_duffy(arch, flavor):
     echo("Requesting host from Duffy")
     hosts, ssid = cico.node_get(arch=arch, flavor=flavor)
     echo("Duffy ssid: {}".format(ssid))
-    echo("Duffy host: {}".format(hosts[0]))
+    echo("Duffy host: {}".format(hosts))
     return ssid
 
 
