@@ -93,67 +93,17 @@ def all_in_one_command(context, operating_system, arch, flavor, stage):
     :param stage: image stage to base the host off of
     """
     configuration = context.obj
-    ssid = provision_with_duffy(arch, flavor)
-#    register_host(configuration, ssid, operating_system, stage)
-
-
-def provision_with_duffy(arch, flavor):
-    """
-    Provision a host using Duffy.
-
-    :param arch: host architecture
-    :param flavor: host flavor
-    """
-    cico = CicoWrapper(endpoint='http://admin.ci.centos.org:8080/')
-    echo("Requesting host from Duffy")
-    hosts, ssid = cico.node_get(arch=arch, flavor=flavor)
-    echo("Duffy ssid: {}".format(ssid))
-    echo("Duffy host: {}".format(hosts))
-    return ssid
-
-
-def register_host(configuration, ssid, operating_system, stage):
-    """
-    Register a new host by updating metadata records for the
-    new host both in the in-memory cache for this process and
-    the on-disk records that will persist past this CLI call.
-
-    :param configuration: Origin CI tool configuration
-    :param ssid: Duffy ssid
-    :param operating_system: Host operating system
-    :param stage: image stage the host was based off of
-    """
-    cico = CicoWrapper(endpoint='http://admin.ci.centos.org:8080/')
-    inventory = cico.inventory(ssid=ssid)
-    hostname, host_props = inventory.popitem()
-
-    configuration.register_duffy_host(
-        DuffyHostMetadata(
-            data={
-                'provisioning_details': {
-                    'ssid': ssid,
-                    'hostname': hostname,
-                    'operating_system': operating_system,
-                    'arch': host_props['architecture'],
-                    'flavor': host_props['flavor'],
-                    'stage': stage,
-                },
-                # we are supporting an all-in-one deployment with the
-                # host, so this host will be both a master and a node
-                'groups': [
-                    'etcd',
-                    'masters',
-                    'nodes',
-                ],
-                # no `infra` region exists as we need the same node to
-                # host OpenShift infrastructure and be schedule-able
-                'extra': {
-                    'openshift_schedulable': True,
-                    'openshift_node_labels': {
-                        'region': 'infra',
-                        'zone': 'default',
-                    },
-                },
+    configuration.run_playbook(
+        playbook_relative_path='provision/duffy-up',
+        playbook_variables={
+            'origin_ci_duffy_arch': arch,
+            'origin_ci_duffy_flavor': flavor,
+            'origin_ci_duffy_groups': ['etcd', 'masters', 'nodes']
+            'origin_ci_inventory_dir': configuration.ansible_client_configuration.host_list,
+            'openshift_schedulable': True,
+            'openshift_node_labels': {
+                'region': 'infra',
+                'zone': 'default'
             }
-        )
+        }
     )
