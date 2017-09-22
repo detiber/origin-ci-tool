@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 base_requires = [
     'Click',
     'ansible==3.0.0',
-    'python-cicoclient==0.3.11.dev15',
+    'python-cicoclient>=0.3.11.dev15',
     'backports.shutil_get_terminal_size',
     'semver',
     'junit_xml',
