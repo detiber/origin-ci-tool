@@ -1,0 +1,15 @@
+---
+- name: tear down the Duffy instance
+  cico:
+    action: down
+    ssid: "{{ origin_ci_duffy_ssid }}"
+
+- name: remove the serialized host variables
+  file:
+    path: '{{ origin_ci_inventory_dir }}/host_vars/{{ origin_ci_duffy_host }}.yml'
+    state: absent
+
+- name: remove the Duffy inventory file
+  file:
+    path: '{{ origin_ci_inventory_dir }}/duffy-inventory'
+    state: absent

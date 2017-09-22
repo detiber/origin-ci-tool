@@ -1,0 +1,20 @@
+---
+- name: provision a Duffy instance
+  hosts: 'localhost'
+  connection: 'local'
+  become: no
+  pre_tasks:
+    - name: ensure all required variables are set
+      fail:
+        msg: 'This playbook requires {{ item }} to be set.'
+      when: item not in vars and item not in hostvars[inventory_hostname]
+      with_items:
+        - origin_ci_inventory_dir
+        - origin_ci_duffy_arch
+        - origin_ci_duffy_flavor
+        - origin_ci_duffy_groups
+        - openshift_schedulable
+        - openshift_node_labels
+  roles:
+    - role: inventory
+    - role: duffy-up

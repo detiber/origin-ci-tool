@@ -1,0 +1,36 @@
+---
+- name: provision a Duffy instance
+  cico:
+    action: get
+    arch: "{{ origin_ci_duffy_arch }}"
+    flavor: "{{ origin_ci_duffy_flavor }}"
+  register: cico_get
+
+- name: determine the host address
+  set_fact:
+    origin_ci_duffy_host: '{{ cico_get.results.hosts.keys().0 }}'
+    origin_ci_duffy_ssid: '{{ cico_get.results.ssid }}'
+
+- name: Add duffy inventory file
+  template:
+    src: duffy-inventory.j2
+    dest: '{{ origin_ci_inventory_dir }}/duffy-inventory'
+
+- name: update variables for the host
+  copy:
+    content:
+      origin_ci_duffy_host: '{{ origin_ci_duffy_host }}'
+      ansible_ssh_user: '{{ origin_ci_duffy_ssh_user }}'
+      ansible_ssh_extra_args: '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o IdentitiesOnly=yes -o ConnectTimeout=0 -o ServerAliveInterval=30'
+      ansible_timeout: 0
+      openshift_schedulable: '{{ openshift_schedulable }}'
+      openshift_node_labels: '{{ openshift_node_labels }}'
+    dest: '{{ origin_ci_inventory_dir }}/host_vars/{{ origin_ci_duffy_host }}.yml'
+
+- name: wait for SSH to be available
+  wait_for:
+    host: '{{ origin_ci_duffy_host }}'
+    port: 22
+    delay: 10
+    timeout: 600
+    state: 'started'
