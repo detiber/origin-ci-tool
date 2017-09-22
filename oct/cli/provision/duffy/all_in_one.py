@@ -98,7 +98,7 @@ def all_in_one_command(context, operating_system, arch, flavor, stage):
         playbook_variables={
             'origin_ci_duffy_arch': arch,
             'origin_ci_duffy_flavor': flavor,
-            'origin_ci_duffy_groups': ['etcd', 'masters', 'nodes']
+            'origin_ci_duffy_groups': ['etcd', 'masters', 'nodes'],
             'origin_ci_inventory_dir': configuration.ansible_client_configuration.host_list,
             'openshift_schedulable': True,
             'openshift_node_labels': {
